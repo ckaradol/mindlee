@@ -1,13 +1,21 @@
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mindlee2/model/fake_data_model.dart';
 
 import '../theme.dart';
 
 class MessageCard extends StatelessWidget {
+  final bool messageScreen;
+  final FakeDataModel fakeDataModel;
+
   const MessageCard({
     super.key,
+    required this.fakeDataModel,
+    this.messageScreen = false,
   });
 
   @override
@@ -23,37 +31,61 @@ class MessageCard extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Farklılıklarımı ve beni öne çıkaran benzersiz niteliklerimi kucaklıyorum.',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              SizedBox(
-                height: AppSpacer.cardSpace,
-              ),
-              const Icon(
-                Icons.favorite_border,
-                color: Color(0xffFFFCFC),
-              ),
-              SizedBox(
-                height: AppSpacer.cardSpace,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding:  EdgeInsets.symmetric(vertical: AppSpacer.threeSpace),
-                      child: SvgPicture.asset("assets/share.svg"),
-                    )
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (messageScreen != true)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "dear".tr(args: ["${fakeDataModel.name}"]),
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      Text(
+                        fakeDataModel.date ?? "",
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
+                    ],
+                  ),
+                SizedBox(
+                  height: AppSpacer.threeSpace,
                 ),
-              )
-            ],
+                Text(
+                  fakeDataModel.message ?? "",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                SizedBox(
+                  height: AppSpacer.cardSpace,
+                ),
+                Icon(
+                  fakeDataModel.like == true
+                      ? Icons.favorite
+                      : AppAssets.favoryNotSelected,
+                  color: fakeDataModel.like == true
+                      ? Colors.red
+                      : const Color(0xffFFFCFC),
+                ),
+                SizedBox(
+                  height: AppSpacer.cardSpace,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: AppSpacer.threeSpace),
+                        child: SvgPicture.asset(AppAssets.shareIcon),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
