@@ -10,14 +10,21 @@ part 'get_fake_data_state.dart';
 
 class GetFakeDataBloc extends Bloc<GetFakeDataEvent, GetFakeDataState> {
   GetFakeDataBloc() : super(GetFakeDataInitial());
-
+  List<FakeDataModel> localData=[];
   @override
   Stream<GetFakeDataState> mapEventToState(
     GetFakeDataEvent event,
   ) async* {
     if (event is GetFakeDateInitialEvent) {
       List<FakeDataModel> data = await loadJsonFile();
-      yield GetFakeDataLoad(fakeData: data);
+      localData.addAll(data);
+      localData.sort((e,a)=>(e.id??0).compareTo(a.id??0));
+      yield GetFakeDataLoad(fakeData: localData);
+    } if (event is LikedEvent) {
+       localData.remove(event.likedItem);
+       localData.add(event.likedItem);
+       localData.sort((e,a)=>(e.id??0).compareTo(a.id??0));
+      yield GetFakeDataLoad(fakeData: localData);
     }
   }
 }

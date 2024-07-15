@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mindlee2/background/fakeData/get_fake_data_bloc.dart';
 import 'package:mindlee2/model/fake_data_model.dart';
 
 import '../theme.dart';
@@ -60,13 +62,34 @@ class MessageCard extends StatelessWidget {
                 SizedBox(
                   height: AppSpacer.cardSpace,
                 ),
-                Icon(
-                  fakeDataModel.like == true
-                      ? Icons.favorite
-                      : AppAssets.favoryNotSelected,
-                  color: fakeDataModel.like == true
-                      ? Colors.red
-                      : const Color(0xffFFFCFC),
+                InkWell(
+                  onTap: () {
+                    if (fakeDataModel.like == true) {
+                      context.read<GetFakeDataBloc>().add(LikedEvent(
+                          likedItem: FakeDataModel(
+                              date: fakeDataModel.date,
+                              like: false,
+                              message: fakeDataModel.message,
+                              name: fakeDataModel.name,
+                              id: fakeDataModel.id)));
+                    } else {
+                      context.read<GetFakeDataBloc>().add(LikedEvent(
+                          likedItem: FakeDataModel(
+                              date: fakeDataModel.date,
+                              like: true,
+                              message: fakeDataModel.message,
+                              name: fakeDataModel.name,
+                              id: fakeDataModel.id)));
+                    }
+                  },
+                  child: Icon(
+                    fakeDataModel.like == true
+                        ? Icons.favorite
+                        : AppAssets.favoryNotSelected,
+                    color: fakeDataModel.like == true
+                        ? Colors.red
+                        : const Color(0xffFFFCFC),
+                  ),
                 ),
                 SizedBox(
                   height: AppSpacer.cardSpace,
